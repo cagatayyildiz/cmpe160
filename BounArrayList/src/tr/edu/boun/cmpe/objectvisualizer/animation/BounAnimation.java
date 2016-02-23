@@ -13,6 +13,7 @@ public abstract class BounAnimation {
 
 	public static final int ANIMATION_ONE_TIME = 0;
 	public static final int ANIMATION_LOOP = 1;
+	public static final int ANIMATION_FORWARD_BACKWARD_LOOP = 2;
 	
 	public static final int STATUS_STOPPED = 0;
 	public static final int STATUS_RUNNING = 1;
@@ -25,17 +26,33 @@ public abstract class BounAnimation {
 	private int animationType = 0;
 	private int animationStatus = 0;
 	
+	private boolean forward = true;
+	
 	public void updateCall(long dt) {
 		if(animationStatus == STATUS_STOPPED) {
 			
 		} else if(animationStatus == STATUS_RUNNING) {
-			currentTime += dt;
+			if(animationType == ANIMATION_FORWARD_BACKWARD_LOOP) {
+				if(forward) {
+					currentTime += dt;
+				} else {
+					currentTime -= dt;
+				}
+				if(duration < currentTime) {
+					forward = false;
+				}
+				if(currentTime < 0) {
+					forward = true;
+				}
+			} else {
+				currentTime += dt;
+			}
 			float factor = getInterpolator().calculate(currentTime, duration);
 			if(factor >= 1) {
 				factor = 1;
 				if(animationType == ANIMATION_LOOP) {
 					currentTime = 0;
-				} else {
+				} else if(animationType == ANIMATION_ONE_TIME){
 					animationStatus = STATUS_STOPPED;
 				}
 			}

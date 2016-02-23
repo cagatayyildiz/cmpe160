@@ -1,4 +1,5 @@
 import tr.edu.boun.cmpe.objectvisualizer.ObjectVisualizerContext;
+import tr.edu.boun.cmpe.objectvisualizer.animation.BounAnimation;
 import tr.edu.boun.cmpe.objectvisualizer.animation.TranslateAnimation;
 import tr.edu.boun.cmpe.objectvisualizer.animation.interpolator.EaseOutCubicInterpolator;
 
@@ -14,10 +15,10 @@ public class Main {
 		final Rectangle r = new Rectangle();
 		context.addObject(r);
 		
-		TranslateAnimation anim = new TranslateAnimation(100, 100, 200, 200);
+		TranslateAnimation anim = new TranslateAnimation(100, 100, 100, 380);
 		anim.setInterpolator(new EaseOutCubicInterpolator());
-		anim.setDuration(1000);
-		//anim.setAnimationType(BounAnimation.ANIMATION_LOOP);
+		anim.setDuration(500);
+		anim.setAnimationType(BounAnimation.ANIMATION_FORWARD_BACKWARD_LOOP);
 		
 		r.setAnimation(anim);
 		r.startAnimation();

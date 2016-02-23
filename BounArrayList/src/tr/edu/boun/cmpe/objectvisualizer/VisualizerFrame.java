@@ -12,7 +12,7 @@ public class VisualizerFrame {
 	public static final int FRAME_WIDTH = 640;
 	public static final int FRAME_HEIGHT = 480; 
 	
-	public static final int FPS = 30;
+	public static final int FPS = 60;
 	
 	private ObjectVisualizerContext context;
 	
