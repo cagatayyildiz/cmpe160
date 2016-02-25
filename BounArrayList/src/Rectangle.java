@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Graphics;
 
 import tr.edu.boun.cmpe.objectvisualizer.BounObject;
@@ -20,7 +21,9 @@ public class Rectangle extends BounObject {
 
 	@Override
 	public void draw(Graphics canvas) {
+		canvas.setColor(getColor());
 		canvas.drawRect(getX(), getY(), width, height);
+		
 	}
 	
 	public void setWidth(int width) {

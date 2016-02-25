@@ -14,6 +14,8 @@ public class VisualizerFrame {
 	
 	public static final int FPS = 60;
 	
+	public static final int SIMULATION_DELAY = 2000;
+	
 	private ObjectVisualizerContext context;
 	
 	private FrameUpdaterThread thread = new FrameUpdaterThread();
@@ -100,6 +102,8 @@ public class VisualizerFrame {
 		private boolean running = false;
 		private long lastTime = 0;
 		
+		private long delayTimer = 0;
+		private boolean updatesStarted = false;
 		public FrameUpdaterThread() {
 			super();
 		}
@@ -112,8 +116,19 @@ public class VisualizerFrame {
 				long dt = currentTime - lastTime;
 				lastTime = currentTime;
 				//dt = Math.min(dt, 20);
-				update(dt);
 				
+				//Delay for 2 seconds on startup.
+				delayTimer += dt;
+				if(delayTimer >= SIMULATION_DELAY) {
+					updatesStarted = true;
+					
+				}
+				
+				if(updatesStarted) {
+					update(dt);
+				} else {
+					update(0);
+				}
 				
 				try {
 					Thread.sleep(1000 / VisualizerFrame.FPS); // frame-rate delimiter

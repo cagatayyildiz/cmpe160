@@ -1,5 +1,6 @@
 package tr.edu.boun.cmpe.objectvisualizer;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 import tr.edu.boun.cmpe.objectvisualizer.animation.BounAnimation;
@@ -10,7 +11,7 @@ import tr.edu.boun.cmpe.objectvisualizer.animation.BounAnimation;
  * Main aspect of these objects is that they can 
  * be visualized when given in an {@link ObjectVisualizerContext}.
  * It is necessary to implement {@link BounObject#update(long)}
- * and {@link BounObject#draw(canvas)} methods in subclasses. Though
+ * and {@link BounObject#draw(Graphics)} methods in subclasses. Though
  * they can be left empty if not sure about what to do. But at least 
  * the draw method should be overridden to display some information
  *  on screen. <br />
@@ -26,6 +27,8 @@ public abstract class BounObject {
 	 */
 	private int x = 0;
 	private int y = 0;
+	
+	private Color color = Color.BLACK;
 	
 	protected void updater(long dt) {
 		if(animation != null && 
@@ -65,6 +68,22 @@ public abstract class BounObject {
 		this.y = y;
 	}
 	
+	public Color getColor() {
+		return color;
+	}
+	
+	public void setColor(Color color) {
+		this.color = color;
+	}
+	
+	public float getAlpha() {
+		return color.getAlpha() / 255f;
+	}
+
+	public void setAlpha(float alpha) {
+		color = new Color(color.getRed(), color.getGreen(), color.getBlue(), (int)(alpha * 255));
+	}
+	
 	public void translateTo(int x, int y) {
 		this.x = x;
 		this.y = y;
@@ -79,4 +98,6 @@ public abstract class BounObject {
 		this.animation.init();
 		this.animation.setAnimationStatus(BounAnimation.STATUS_RUNNING);
 	}
+
+	
 }
