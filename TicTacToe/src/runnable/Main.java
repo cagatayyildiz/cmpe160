@@ -10,10 +10,6 @@ public class Main {
 		Player player2 = new Player("Hande", 'H');
 
 		Game game = new Game(player1, player2);
-		try {
-			game.runGame(player1); // player1 plays the game
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} 
+		game.runGame(player1); // player1 plays the game
 	}
 }

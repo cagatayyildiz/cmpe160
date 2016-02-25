@@ -25,7 +25,7 @@ public class Game {
 		this.round = 1;
 	}
 
-	public void runGame(Player startingPlayer) throws InterruptedException {
+	public void runGame(Player startingPlayer) {
 		Player currentPlayer = startingPlayer;
 		for (int r = 0; r < 9; r++) {
 			round++;
@@ -45,17 +45,21 @@ public class Game {
 							board.updateCanvas(posX, posY, mark, currentPlayer.name, round);
 							break;
 						} else {
-							// System.out.print("The position is full! Why don't you try again? Enter your move: ");
-							// System.out.println();
+							this.board.announceLocationMarked();
 						}
 					}
 				}
 				else {
-					Thread.sleep(50);
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}
-		this.board.announceTie(round);
+		this.board.announceTie();
 		killTheGame(3000);
 	}
 
@@ -100,7 +104,7 @@ public class Game {
 		} else {
 			winner = player2;
 		}
-		this.board.announceWinner(winner.name,this.round);
+		this.board.announceWinner(winner.name);
 		killTheGame(3000);
 	}
 

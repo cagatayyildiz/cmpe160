@@ -81,21 +81,29 @@ public class Board {
 		waitforInput = true;
 	}
 	
-	public void announceTie(int round) {
-		roundLabel.setLabel("Round: " + (round-1));
-		currentPlayerLabel.setLabel("This is a tie, no winner:(");
-		waitforInput = true;
+	public void announceLocationMarked() {
+		makeAnnouncement("This location is already marked!", 0);
+	}
+	
+	public void announceTie() {
+		makeAnnouncement("This is a tie, no winner:(", 1);
 	}
 
-	public void announceWinner(String winner, int round) {
-		roundLabel.setLabel("Round: " + (round-2));
-		currentPlayerLabel.setLabel(winner + " has won the game!");
+	public void announceWinner(String winner) {
+		makeAnnouncement(winner + " has won the game!", 1);
+	}
+	
+	private void makeAnnouncement(String text, int offset) {
+		String label[] = roundLabel.getLabel().split(" ");
+		int round = Integer.parseInt(label[1]);
+		roundLabel.setLabel("Round: " + (round-offset));
+		currentPlayerLabel.setLabel(text);
 		waitforInput = true;
+		
 	}
 
 	class CustomMouseListener implements MouseListener {
 		public void mouseClicked(MouseEvent e) {
-			// System.out.println(e.getX() + ", " + e.getY() + " is clicked.");
 			if (e.getX()<width && e.getY()<height) {
 				mouseY = e.getX()/(width/3);
 				mouseX = e.getY()/(height/3);
