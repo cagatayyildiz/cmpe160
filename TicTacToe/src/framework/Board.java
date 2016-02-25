@@ -1,122 +1,127 @@
 package framework;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.JFrame;
+
+import acm.graphics.GCanvas;
+import acm.graphics.GLabel;
+import acm.graphics.GRect;
 
 public class Board {
+
+	int width;
+	int height;
+	JFrame frame = new JFrame("Tic-Tac-Toe");
+	GCanvas canvas = new GCanvas();
+	GRect rects[] = new GRect[8];
+	GLabel roundLabel = new GLabel("");
+	GLabel currentPlayerLabel = new GLabel("");
+	int mouseX = -1;
+	int mouseY = -1;
+	boolean waitforInput = true;
+
+	public Board(int width_, int height_, String firstPlayerName) {
+		width = width_;
+		height = height_;
+		frame.getContentPane().add(canvas);
+		canvas.addMouseListener(new CustomMouseListener());
+		frame.setSize(width, height + 80);
+		frame.setVisible(true);
+		frame.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent windowEvent) {
+				System.exit(0);
+			}
+		});
+
+		roundLabel = new GLabel("", 5, this.height + 20);
+		roundLabel.setFont("SansSerif-bold-20");
+		currentPlayerLabel = new GLabel("", 5, this.height + 40);
+		currentPlayerLabel.setFont("SansSerif-bold-20");
+		canvas.add(roundLabel);
+		canvas.add(currentPlayerLabel);
+
+		rects[0] = new GRect(0, 0, 2, height);
+		rects[1] = new GRect(width / 3, 0, 2, height);
+		rects[2] = new GRect(2 * width / 3, 0, 2, height);
+		rects[3] = new GRect(width - 3, 0, 2, height);
+
+		rects[4] = new GRect(0, 0, width, 2);
+		rects[6] = new GRect(0, height / 3, width, 2);
+		rects[5] = new GRect(0, 2 * height / 3, width, 2);
+		rects[7] = new GRect(0, height, width, 2);
+		for (GRect rect : rects) {
+			rect.setFilled(true);
+			rect.setColor(Color.BLACK);
+			canvas.add(rect);
+		}
+		updateGameInfo(firstPlayerName, 1);
+	}
+
+	public void updateCanvas(int posX, int posY, char mark, String currentPlayerName, int round) {
+		int markWidth = width / 15;
+		int markHeight = 4 * height / 15;
+		int canvasPosX = posY * width / 3 + markWidth;
+		int canvasPosY = posX * height / 3 + markHeight;
+
+		GLabel label = new GLabel(mark + "", canvasPosX, canvasPosY);
+		label.setFont("SansSerif-bold-150");
+		canvas.add(label);
+
+		updateGameInfo(currentPlayerName, round);
+	}
+
+	public void updateGameInfo(String currentPlayerName, int round) {
+		roundLabel.setLabel("Round: " + round);
+		currentPlayerLabel.setLabel("It's " + currentPlayerName + "'s turn!");
+		waitforInput = true;
+	}
 	
-	public static char EMPTY_POS_MARK = '-';
-	private final int BOARD_WIDTH = 500;
-	private final int BOARD_HEIGHT = 500;
+	public void announceLocationMarked() {
+		makeAnnouncement("This location is already marked!", 0);
+	}
 	
-	char [][] board;
-	Player player1;
-	Player player2;
-	TTTFrame frame;
+	public void announceTie() {
+		makeAnnouncement("This is a tie, no winner:(", 1);
+	}
+
+	public void announceWinner(String winner) {
+		makeAnnouncement(winner + " has won the game!", 1);
+	}
 	
-	public Board(Player player1, Player player2){
-		this.board = new char[3][3];
-		for (int i=0; i<3; i++) {
-			for (int j=0; j<3; j++) {
-				board[i][j] = EMPTY_POS_MARK;
+	private void makeAnnouncement(String text, int offset) {
+		String label[] = roundLabel.getLabel().split(" ");
+		int round = Integer.parseInt(label[1]);
+		roundLabel.setLabel("Round: " + (round-offset));
+		currentPlayerLabel.setLabel(text);
+		waitforInput = true;
+		
+	}
+
+	class CustomMouseListener implements MouseListener {
+		public void mouseClicked(MouseEvent e) {
+			if (e.getX()<width && e.getY()<height) {
+				mouseY = e.getX()/(width/3);
+				mouseX = e.getY()/(height/3);
+				waitforInput = false;
 			}
 		}
-		this.player1 = player1;
-		this.player2 = player2;
-		frame = new TTTFrame(BOARD_WIDTH, BOARD_HEIGHT);
-	}
-	
-	public void runGame(Player startingPlayer) {
-		Player player = startingPlayer;
-		for (int r=0; r<9; r++) {
-			if (gameOver()) {
-				break;
-			}
-			System.out.print("Hey " + player.name + ", it's your turn! Enter your move: ");
-			System.out.println();
-			while (true) {
-				printBoard();
-				BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
-			    String move;
-				try {
-					move = bufferRead.readLine();
-					System.out.println(move);
-					String[] pos = move.split(",");
-					int posX = Integer.parseInt(pos[0]);
-					int posY = Integer.parseInt(pos[1]);
-					if (posX < 3 && posY < 3 && posX > -1 && posY > -1) {
-						if (board[posX][posY] == EMPTY_POS_MARK) {
-							board[posX][posY] = player.mark;
-							frame.updateCanvas(posX,posY,player.mark);
-							player = getOtherPlayer(player);
-							break;
-						}
-						else {
-							System.out.print("The position is full! Why don't you try again? Enter your move: ");
-							System.out.println();
-						}
-					}
-					else {
-						System.out.print("C'mon, enter values less than 3: ");
-						System.out.println();
-					}
-				} catch (Exception e) {
-					System.out.println("Input format is incorrect!");
-					e.printStackTrace();
-				}
-			}
+
+		public void mousePressed(MouseEvent e) {
+		}
+
+		public void mouseReleased(MouseEvent e) {
+		}
+
+		public void mouseEntered(MouseEvent e) {
+		}
+
+		public void mouseExited(MouseEvent e) {
 		}
 	}
-	
-	public boolean makeMove(Player player, int posX, int posY) {
-		if (board[posX][posY] == EMPTY_POS_MARK) {
-			board[posX][posY] = player.mark;
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	
-	public boolean gameOver() {
-		for (int i=0; i<3; i++) {
-			if (board[i][0] != EMPTY_POS_MARK && board[i][0] == board[i][1] &&  board[i][1] == board[i][2]) {
-				announceEnding(board[i][0]);
-				return true;
-			}
-			if (board[0][i] != EMPTY_POS_MARK && board[0][i] == board[1][i] &&  board[1][i] == board[2][i]) {
-				announceEnding(board[0][i]);
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public void printBoard() {
-		for (int i=0; i<3; i++) {
-			for (int j=0; j<3; j++) {
-				System.out.print(board[i][j] + "  ");
-			}
-			System.out.println();
-		}
-	}
-	
-	private void announceEnding(char mark) {
-		Player winner;
-		if (player1.mark == mark) {
-			winner = player1;
-		}
-		else {
-			winner = player2;
-		}
-		System.out.println("\n*** Congratulations " + winner.name + "! You have won the game! ***");
-	}
-	
-	private Player getOtherPlayer(Player current) {
-		if (current==player1) {
-			return player2;
-		}
-		return player1;
-	}
+
 }
