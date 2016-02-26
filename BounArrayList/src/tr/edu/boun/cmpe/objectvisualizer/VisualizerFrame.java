@@ -89,9 +89,13 @@ public class VisualizerFrame {
 	 * 					last update call.
 	 */
 	private void draw() {
-		this.canvas.repaint();
+		this.canvas.paintImmediately(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
 	}
 	
+	public BounCanvas getCanvas() {
+		return canvas;
+	}
+
 	/**
 	 * Separate thread to control update calls from UI controller.
 	 * @author triforce
@@ -145,6 +149,7 @@ public class VisualizerFrame {
 		public void setRunning(boolean running) {
 			this.running = running;
 		}
+		
 		
 		
 	}

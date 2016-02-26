@@ -1,13 +1,15 @@
+package test;
+import java.awt.Color;
 import java.awt.Font;
 
 import tr.edu.boun.cmpe.objectvisualizer.ObjectVisualizerContext;
 import tr.edu.boun.cmpe.objectvisualizer.animation.AlphaAnimation;
 import tr.edu.boun.cmpe.objectvisualizer.animation.AnimationSet;
-import tr.edu.boun.cmpe.objectvisualizer.animation.BounAnimation;
 import tr.edu.boun.cmpe.objectvisualizer.animation.TranslateAnimation;
 import tr.edu.boun.cmpe.objectvisualizer.animation.interpolator.EaseInCubicInterpolator;
-import tr.edu.boun.cmpe.objectvisualizer.animation.interpolator.EaseOutCubicInterpolator;
 import tr.edu.boun.cmpe.objectvisualizer.widget.Label;
+import tr.edu.boun.cmpe.objectvisualizer.widget.ObjectGroup;
+import tr.edu.boun.cmpe.objectvisualizer.widget.Rectangle;
 
 /**
  * Includes use cases of {@link ObjectVisualizerContext}
@@ -16,30 +18,9 @@ import tr.edu.boun.cmpe.objectvisualizer.widget.Label;
  */
 public class Main {
 	public static void main(String[] args) {
-//		ObjectVisualizerContext context = new ObjectVisualizerContext();
-//		
-//		final Rectangle r = new Rectangle();
-//		context.addObject(r);
-//		
-//		AnimationSet aSet = new AnimationSet();
-//		
-//		TranslateAnimation anim = new TranslateAnimation(100, 100, 100, 380);
-//		anim.setInterpolator(new EaseOutCubicInterpolator());
-//		anim.setDuration(500);
-//		anim.setAnimationType(BounAnimation.ANIMATION_FORWARD_BACKWARD_LOOP);
-//		
-//		AlphaAnimation alphaAnim = new AlphaAnimation(0.0f, 1.0f);
-//		alphaAnim.setInterpolator(new EaseOutCubicInterpolator());
-//		alphaAnim.setDuration(500);
-//		alphaAnim.setAnimationType(BounAnimation.ANIMATION_FORWARD_BACKWARD_LOOP);
-//		
-//		aSet.addAnimation(anim);
-//		aSet.addAnimation(alphaAnim);
-//		
-//		r.setAnimation(aSet);
-//		r.startAnimation();
 		
-		test3();
+		
+		test6();
 		
 		
 	}
@@ -52,7 +33,7 @@ public class Main {
 		ObjectVisualizerContext context = new ObjectVisualizerContext();
 		
 		//Create a component you need.
-		Label label = new Label("Test Text Here!");
+		Label label = new Label(context, "Test Text Here!");
 		//Avoid recreating components for performance. If you need to
 		//create and delete a lot of components at the same time. Just
 		//create a bunch of them at first, and reuse the old ones
@@ -78,7 +59,7 @@ public class Main {
 		ObjectVisualizerContext context = new ObjectVisualizerContext();
 		
 		//Create an object and add it.
-		Label label = new Label("Test");
+		Label label = new Label(context, "Test");
 		label.setX(100);
 		label.setY(100);
 		label.setFont(new Font(null, Font.PLAIN, 16));
@@ -117,7 +98,7 @@ public class Main {
 		ObjectVisualizerContext context = new ObjectVisualizerContext();
 		
 		// Create an object and add it to the context.
-		final Label l = new Label("Test");
+		final Label l = new Label(context, "Test");
 		l.setX(10);
 		l.setY(10);
 		
@@ -150,9 +131,103 @@ public class Main {
 		
 	}
 	
+	/**
+	 * Object groups test.
+	 */
+	public static void test4() {
+		ObjectVisualizerContext context = new ObjectVisualizerContext();
+		
+		Label l = new Label(context, "Test");
+		l.setX(0);
+		l.setY(0);
+		Rectangle r = new Rectangle(context);
+		r.setX(0);
+		r.setY(0);
+		r.setWidth(100);
+		r.setHeight(100);
+		
+		ObjectGroup og = new ObjectGroup(context);
+		
+		og.setX(100);
+		og.setY(100);
+		
+		og.addObject(r);
+		og.addObject(l);
+		
+		//Relocating the og will move both Label and Rectangle to new position.
+		//Grouping objects can be useful in most cases.
+		
+		context.addObject(og);
+	}
 	
+	/**
+	 * Animations on object groups.
+	 */
+	public static void test5() {
+		ObjectVisualizerContext context = new ObjectVisualizerContext();
+		
+		Label l = new Label(context, "Test");
+		l.setX(0);
+		l.setY(0);
+		Rectangle r = new Rectangle(context);
+		r.setX(0);
+		r.setY(0);
+		r.setWidth(100);
+		r.setHeight(100);
+		
+		ObjectGroup og = new ObjectGroup(context);
+		
+		og.setX(100);
+		og.setY(100);
+		
+		og.addObject(r);
+		og.addObject(l);
+		
+		
+		TranslateAnimation anim = new TranslateAnimation(0, 0, 100, 100);
+		anim.setDuration(800);
+		anim.setInterpolator(new EaseInCubicInterpolator());
+		
+		context.addObject(og);
+		
+		og.setAnimation(anim);
+		og.startAnimation();
+		
+	}
 	
-	
+	/**
+	 * Alpha animations on object groups
+	 */
+	public static void test6() {
+ObjectVisualizerContext context = new ObjectVisualizerContext();
+		
+		Label l = new Label(context, "Test");
+		l.setX(0);
+		l.setY(0);
+		Rectangle r = new Rectangle(context);
+		r.setX(0);
+		r.setY(0);
+		r.setWidth(100);
+		r.setHeight(100);
+		
+		ObjectGroup og = new ObjectGroup(context);
+		
+		og.setX(100);
+		og.setY(100);
+		
+		og.addObject(r);
+		og.addObject(l);
+		
+		
+		AlphaAnimation anim = new AlphaAnimation(0.0f, 1.0f);
+		anim.setDuration(800);
+		
+		context.addObject(og);
+		
+		og.setAnimation(anim);
+		og.startAnimation();
+		
+	}
 	
 	
 }
