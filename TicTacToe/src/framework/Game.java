@@ -1,32 +1,39 @@
 package framework;
 
+/**
+ * 
+ * @author Çağatay Yıldız
+ * 
+ */
 public class Game {
 
-	public static char EMPTY_POS_MARK = '-';
-	private final int BOARD_WIDTH = 500;
-	private final int BOARD_HEIGHT = 500;
+	public int WAIT_BEFORE_CLOSE = 5000;
+	public char EMPTY_POS_MARK = '-';
+	public int BOARD_WIDTH = 500;
+	public int BOARD_HEIGHT = 500;
 
-	char[][] boardArray;
-	Player player1;
-	Player player2;
-	Board board;
-	int round;
+	public char[][] boardArray;
+	public Player player1;
+	public Player player2;
+	public Board board;
+	public int round;
 
-	public Game(Player firstPlayer, Player secondPlayer) {
-		this.boardArray = new char[3][3];
+	public Game(String firstPlayer, String secondPlayer) {
+		boardArray = new char[3][3];
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				boardArray[i][j] = EMPTY_POS_MARK;
 			}
 		}
-		this.player1 = firstPlayer;
-		this.player2 = secondPlayer;
-		this.board = new Board(BOARD_WIDTH, BOARD_HEIGHT, firstPlayer.name);
-		this.round = 1;
+		player1 = new Player(firstPlayer, 'X');
+		player2 = new Player(secondPlayer, 'O');
+
+		board = new Board(BOARD_WIDTH, BOARD_HEIGHT, player1.name);
+		round = 1;
 	}
 
-	public void runGame(Player startingPlayer) {
-		Player currentPlayer = startingPlayer;
+	public void runGame() {
+		Player currentPlayer = player1;
 		for (int r = 0; r < 9; r++) {
 			round++;
 			if (isGameOver()) {
@@ -35,8 +42,8 @@ public class Game {
 			while (true) {
 				if (!board.waitforInput) {
 					board.waitforInput = true;
-					int posX = this.board.mouseX;
-					int posY = this.board.mouseY;
+					int posX = board.mouseX;
+					int posY = board.mouseY;
 					if (posX < 3 && posY < 3 && posX > -1 && posY > -1) {
 						if (boardArray[posX][posY] == EMPTY_POS_MARK) {
 							char mark = currentPlayer.mark;
@@ -45,7 +52,7 @@ public class Game {
 							board.updateCanvas(posX, posY, mark, currentPlayer.name, round);
 							break;
 						} else {
-							this.board.announceLocationMarked();
+							board.announceLocationMarked();
 						}
 					}
 				}
@@ -53,14 +60,13 @@ public class Game {
 					try {
 						Thread.sleep(50);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 			}
 		}
-		this.board.announceTie();
-		killTheGame(3000);
+		board.announceTie();
+		killTheGame(WAIT_BEFORE_CLOSE);
 	}
 
 	public boolean updateBoardArray(Player player, int posX, int posY) {
@@ -88,33 +94,24 @@ public class Game {
 		return false;
 	}
 
-	public void printBoard() {
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				System.out.print(boardArray[i][j] + "  ");
-			}
-			System.out.println();
-		}
-	}
-
-	private void announceWinner(char mark) {
+	public void announceWinner(char mark) {
 		Player winner;
 		if (player1.mark == mark) {
 			winner = player1;
 		} else {
 			winner = player2;
 		}
-		this.board.announceWinner(winner.name);
-		killTheGame(3000);
+		board.announceWinner(winner.name);
+		killTheGame(WAIT_BEFORE_CLOSE);
 	}
 
-	private Player switchPlayer(Player current) {
+	public Player switchPlayer(Player current) {
 		if (current == player1) {
 			return player2;
 		}
 		return player1;
 	}
-	
+
 	public void killTheGame(int milisecs) {
 		try {
 			Thread.sleep(milisecs);

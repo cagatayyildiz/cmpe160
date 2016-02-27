@@ -1,9 +1,14 @@
 package framework;
 
+/**
+ * 
+ * @author Çağatay Yıldız
+ * 
+ */
 public class Player {
 	
-	String name;
-	char mark;
+	public String name;
+	public char mark;
 	
 	public Player(String name, char mark) {
 		this.name = name;

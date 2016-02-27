@@ -12,18 +12,23 @@ import acm.graphics.GCanvas;
 import acm.graphics.GLabel;
 import acm.graphics.GRect;
 
+/**
+ * 
+ * @author Çağatay Yıldız
+ * 
+ */
 public class Board {
 
-	int width;
-	int height;
-	JFrame frame = new JFrame("Tic-Tac-Toe");
-	GCanvas canvas = new GCanvas();
-	GRect rects[] = new GRect[8];
-	GLabel roundLabel = new GLabel("");
-	GLabel currentPlayerLabel = new GLabel("");
-	int mouseX = -1;
-	int mouseY = -1;
-	boolean waitforInput = true;
+	public int width;
+	public int height;
+	public JFrame frame = new JFrame("Tic-Tac-Toe");
+	public GCanvas canvas = new GCanvas();
+	public GRect rects[] = new GRect[8];
+	public GLabel roundLabel = new GLabel("");
+	public GLabel currentPlayerLabel = new GLabel("");
+	public int mouseX = -1;
+	public int mouseY = -1;
+	public boolean waitforInput = true;
 
 	public Board(int width_, int height_, String firstPlayerName) {
 		width = width_;
@@ -38,9 +43,9 @@ public class Board {
 			}
 		});
 
-		roundLabel = new GLabel("", 5, this.height + 20);
+		roundLabel = new GLabel("", 5, height + 20);
 		roundLabel.setFont("SansSerif-bold-20");
-		currentPlayerLabel = new GLabel("", 5, this.height + 40);
+		currentPlayerLabel = new GLabel("", 5, height + 40);
 		currentPlayerLabel.setFont("SansSerif-bold-20");
 		canvas.add(roundLabel);
 		canvas.add(currentPlayerLabel);
@@ -80,11 +85,11 @@ public class Board {
 		currentPlayerLabel.setLabel("It's " + currentPlayerName + "'s turn!");
 		waitforInput = true;
 	}
-	
+
 	public void announceLocationMarked() {
 		makeAnnouncement("This location is already marked!", 0);
 	}
-	
+
 	public void announceTie() {
 		makeAnnouncement("This is a tie, no winner:(", 1);
 	}
@@ -92,17 +97,17 @@ public class Board {
 	public void announceWinner(String winner) {
 		makeAnnouncement(winner + " has won the game!", 1);
 	}
-	
-	private void makeAnnouncement(String text, int offset) {
+
+	public void makeAnnouncement(String text, int offset) {
 		String label[] = roundLabel.getLabel().split(" ");
 		int round = Integer.parseInt(label[1]);
 		roundLabel.setLabel("Round: " + (round-offset));
 		currentPlayerLabel.setLabel(text);
 		waitforInput = true;
-		
+
 	}
 
-	class CustomMouseListener implements MouseListener {
+	public class CustomMouseListener implements MouseListener {
 		public void mouseClicked(MouseEvent e) {
 			if (e.getX()<width && e.getY()<height) {
 				mouseY = e.getX()/(width/3);
