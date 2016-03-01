@@ -3,7 +3,11 @@ package tr.edu.boun.cmpe.objectvisualizer;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import tr.edu.boun.cmpe.objectvisualizer.animation.AlphaAnimation;
+import tr.edu.boun.cmpe.objectvisualizer.animation.AnimationSet;
 import tr.edu.boun.cmpe.objectvisualizer.animation.BounAnimation;
+import tr.edu.boun.cmpe.objectvisualizer.animation.TranslateAnimation;
+import tr.edu.boun.cmpe.objectvisualizer.exception.BounVisualizerException;
 
 /**
  * Base object model for all the Boun objects.<br />
@@ -21,6 +25,8 @@ import tr.edu.boun.cmpe.objectvisualizer.animation.BounAnimation;
  */
 public abstract class BounObject {
 
+	private ObjectVisualizerContext context;
+	
 	private BounAnimation animation;
 	/*
 	 * Position parameters
@@ -28,9 +34,31 @@ public abstract class BounObject {
 	private int x = 0;
 	private int y = 0;
 	
+	private int width = 1;
+	private int height = 1;
+	
+	private boolean updateDimensionsFlag = false;
+	
 	private Color color = Color.BLACK;
 	
-	protected void updater(long dt) {
+	public BounObject() throws BounVisualizerException {
+		if(BounStaticTracker.isStaticContextActive()) {
+			this.context = BounStaticTracker.getStaticContext();
+		} else {
+			Log.error("No static context. Please initiate the static context first.");
+			throw new BounVisualizerException();
+		}
+	}
+	
+	public BounObject(ObjectVisualizerContext context) {
+		this.context = context;
+	}
+	
+	public void updater(long dt) {
+		if(updateDimensionsFlag) {
+			measure();
+			updateDimensionsFlag = false;
+		}
 		if(animation != null && 
 				animation.getAnimationStatus() == BounAnimation.STATUS_RUNNING) {
 			animation.updateCall(dt);
@@ -52,6 +80,21 @@ public abstract class BounObject {
 	 */
 	public abstract void draw(Graphics canvas);
 	
+	/**
+	 * Sets the object's dimension parameters. 
+	 * This method is called only if the updateDimensionsFlag
+	 * is set during an update call.
+	 */
+	public void measure() {}
+	
+	/**
+	 * Called when an event is dispatched on the object.
+	 * @param e Event parameters
+	 */
+	public void handleEvent(Event e) {
+		
+	}
+	
 	public int getX() {
 		return x;
 	}
@@ -68,6 +111,22 @@ public abstract class BounObject {
 		this.y = y;
 	}
 	
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
 	public Color getColor() {
 		return color;
 	}
@@ -99,5 +158,20 @@ public abstract class BounObject {
 		this.animation.setAnimationStatus(BounAnimation.STATUS_RUNNING);
 	}
 
+	public void invalidate() {
+		updateDimensionsFlag = true;
+	}
+
+	public ObjectVisualizerContext getContext() {
+		return context;
+	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		if(BounStaticTracker.isStaticContextActive()) {
+			BounStaticTracker.getStaticContext().removeObject(this);
+		}
+	}
 	
 }

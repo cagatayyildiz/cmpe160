@@ -20,13 +20,18 @@ public abstract class BounAnimation {
 	
 	private BounObject target;
 	
+	private AnimationListener listener;
+	
 	private Interpolator interpolator = new LinearInterpolator();
 	protected long currentTime = 0;
 	protected long duration = 5000;
+	protected long delay = 0; 
 	private int animationType = 0;
 	private int animationStatus = 0;
 	
 	private boolean forward = true;
+	
+	private boolean callbackFlag = false;
 	
 	public void updateCall(long dt) {
 		if(animationStatus == STATUS_STOPPED) {
@@ -38,25 +43,42 @@ public abstract class BounAnimation {
 				} else {
 					currentTime -= dt;
 				}
-				if(duration < currentTime) {
+				if(duration + delay < currentTime) {
 					forward = false;
 				}
 				if(currentTime < 0) {
 					forward = true;
+					if(listener != null) {
+						listener.onAnimationLoop(this);
+					}
 				}
 			} else {
 				currentTime += dt;
 			}
-			float factor = getInterpolator().calculate(currentTime, duration);
-			if(factor >= 1) {
-				factor = 1;
-				if(animationType == ANIMATION_LOOP) {
-					currentTime = 0;
-				} else if(animationType == ANIMATION_ONE_TIME){
-					animationStatus = STATUS_STOPPED;
+			if(currentTime > delay) {
+				if(!callbackFlag) {
+					if(listener != null) {
+						listener.onAnimationStart(this);
+					}
+					callbackFlag = true;
 				}
+				float factor = getInterpolator().calculate(currentTime - delay, duration);
+				if(factor >= 1) {
+					factor = 1;
+					if(animationType == ANIMATION_LOOP) {
+						currentTime = 0;
+						if(listener != null) {
+							listener.onAnimationLoop(this);
+						}
+					} else if(animationType == ANIMATION_ONE_TIME){
+						if(listener != null) {
+							listener.onAnimationEnd(this);
+						}
+						animationStatus = STATUS_STOPPED;
+					}
+				}
+				update(factor);
 			}
-			update(factor);
 			
 		}
 	}
@@ -94,6 +116,14 @@ public abstract class BounAnimation {
 		this.duration = duration;
 	}
 	
+	public long getDelay() {
+		return delay;
+	}
+
+	public void setDelay(long delay) {
+		this.delay = delay;
+	}
+
 	public BounObject getTarget() {
 		return target;
 	}
@@ -109,4 +139,15 @@ public abstract class BounAnimation {
 	public void setAnimationStatus(int animationStatus) {
 		this.animationStatus = animationStatus;
 	}
+	
+	public void setAnimationListener(AnimationListener listener) {
+		this.listener = listener;
+	}
+	
+	public interface AnimationListener {
+		public void onAnimationStart(BounAnimation anim);
+		public void onAnimationEnd(BounAnimation anim);
+		public void onAnimationLoop(BounAnimation anim);
+	}
+	
 }
