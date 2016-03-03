@@ -1,4 +1,0 @@
-#Ignore compiled class files.
-**/*.class
-#Ignore system specific classpath file.
-**/.classpath
