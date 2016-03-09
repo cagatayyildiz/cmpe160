@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 
 import tr.edu.boun.cmpe.objectvisualizer.BounObject;
+import tr.edu.boun.cmpe.objectvisualizer.ObjectVisualizerContext;
 
 /**
  * Simple component to display text on canvas.
@@ -16,9 +17,12 @@ public class Label extends BounObject {
 	
 	private Font font;
 	
-	public Label() {}
+	public Label(ObjectVisualizerContext context) {
+		super(context);
+	}
 	
-	public Label(String text) {
+	public Label(ObjectVisualizerContext context, String text) {
+		super(context);
 		this.text = text;
 	}
 	

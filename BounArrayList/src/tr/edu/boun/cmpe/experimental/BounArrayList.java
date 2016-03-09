@@ -44,7 +44,7 @@ public class BounArrayList {
 		if (data.length == currentDataLength) {
 			resize();
 		}
-		Label label = new Label(num + "");
+		Label label = new Label(context, num + "");
 		label.setFont(new Font(null, Font.BOLD, CONTENT_FONT_SIZE));
 		
 		// make below an instance method in Label.java
@@ -80,7 +80,7 @@ public class BounArrayList {
 			labels.get(i).setY(newY + CONTENT_FONT_SIZE / 3);
 		}
 		for (int i=currentDataLength; i<newLength; i++) {
-			BounRectangle rect = new BounRectangle(newX + i * HEIGHT, newY, HEIGHT, HEIGHT);
+			BounRectangle rect = new BounRectangle(context, newX + i * HEIGHT, newY, HEIGHT, HEIGHT);
 			context.addObject(rect);
 			cells.add(rect);
 		}
@@ -95,14 +95,14 @@ public class BounArrayList {
 		int X = list.getX();
 		int Y = list.getY();
 		for (int i = 0; i < INITIAL_SIZE; i++) {
-			BounRectangle rect = new BounRectangle(X + i * HEIGHT, Y, HEIGHT, HEIGHT);
+			BounRectangle rect = new BounRectangle(context, X + i * HEIGHT, Y, HEIGHT, HEIGHT);
 			context.addObject(rect);
 			cells.add(rect);
 		}
 	}
 
 	private void initArrayList() {
-		list = new BounRectangle(SPREAD);
+		list = new BounRectangle(context, SPREAD);
 		list.setWidth(WIDTH);
 		list.setHeight(HEIGHT);
 		context.addObject(list);

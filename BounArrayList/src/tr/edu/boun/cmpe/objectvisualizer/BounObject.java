@@ -21,6 +21,8 @@ import tr.edu.boun.cmpe.objectvisualizer.animation.BounAnimation;
  */
 public abstract class BounObject {
 
+	private ObjectVisualizerContext context;
+	
 	private BounAnimation animation;
 	/*
 	 * Position parameters
@@ -29,6 +31,10 @@ public abstract class BounObject {
 	private int y = 0;
 	
 	private Color color = Color.BLACK;
+	
+	public BounObject(ObjectVisualizerContext context) {
+		this.context = context;
+	}
 	
 	protected void updater(long dt) {
 		if(animation != null && 
@@ -99,5 +105,8 @@ public abstract class BounObject {
 		this.animation.setAnimationStatus(BounAnimation.STATUS_RUNNING);
 	}
 
+	public ObjectVisualizerContext getContext() {
+		return context;
+	}
 	
 }

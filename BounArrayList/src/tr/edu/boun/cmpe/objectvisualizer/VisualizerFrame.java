@@ -28,6 +28,7 @@ public class VisualizerFrame {
 	 */
 	public VisualizerFrame(ObjectVisualizerContext context) {
 		this.context = context;
+		
 		canvas = new BounCanvas(context);
 		frame = new JFrame("Frame 1");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -126,6 +127,7 @@ public class VisualizerFrame {
 				
 				if(updatesStarted) {
 					update(dt);
+					context.getEventSystem().runEvents(dt);
 				} else {
 					update(0);
 				}

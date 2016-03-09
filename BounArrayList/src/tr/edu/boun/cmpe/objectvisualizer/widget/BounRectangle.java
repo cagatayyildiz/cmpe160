@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.util.Random;
 
 import tr.edu.boun.cmpe.objectvisualizer.BounObject;
+import tr.edu.boun.cmpe.objectvisualizer.ObjectVisualizerContext;
 import tr.edu.boun.cmpe.objectvisualizer.animation.TranslateAnimation;
 import tr.edu.boun.cmpe.objectvisualizer.animation.interpolator.EaseInCubicInterpolator;
 
@@ -12,24 +13,28 @@ public class BounRectangle extends BounObject {
 	int width = 100;
 	int height = 100;
 	
-	public BounRectangle() {
+	public BounRectangle(ObjectVisualizerContext context) {
+		super(context);
 		setX(0);
 		setY(0);
 	}
 	
-	public BounRectangle(int xInit, int yInit) {
+	public BounRectangle(ObjectVisualizerContext context, int xInit, int yInit) {
+		super(context);
 		setX(xInit);
 		setY(yInit);
 	}
 	
-	public BounRectangle(int xInit, int yInit, int width, int height) {
+	public BounRectangle(ObjectVisualizerContext context, int xInit, int yInit, int width, int height) {
+		super(context);
 		setX(xInit);
 		setY(yInit);
 		setWidth(width);
 		setHeight(height);
 	}
 
-	public BounRectangle(int spread) {
+	public BounRectangle(ObjectVisualizerContext context, int spread) {
+		super(context);
 		Random r = new Random();
 		this.setX(spread/10 + r.nextInt(spread));
 		this.setY(spread/10 + r.nextInt(spread));

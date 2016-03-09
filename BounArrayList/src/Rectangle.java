@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import tr.edu.boun.cmpe.objectvisualizer.BounObject;
+import tr.edu.boun.cmpe.objectvisualizer.ObjectVisualizerContext;
 
 
 public class Rectangle extends BounObject {
@@ -9,7 +10,8 @@ public class Rectangle extends BounObject {
 	int width = 100;
 	int height = 100;
 	
-	public Rectangle() {
+	public Rectangle(ObjectVisualizerContext context) {
+		super(context);
 		setX(0);
 		setY(0);
 	}

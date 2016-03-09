@@ -7,6 +7,7 @@ import tr.edu.boun.cmpe.objectvisualizer.animation.BounAnimation;
 import tr.edu.boun.cmpe.objectvisualizer.animation.TranslateAnimation;
 import tr.edu.boun.cmpe.objectvisualizer.animation.interpolator.EaseInCubicInterpolator;
 import tr.edu.boun.cmpe.objectvisualizer.animation.interpolator.EaseOutCubicInterpolator;
+import tr.edu.boun.cmpe.objectvisualizer.event.Event;
 import tr.edu.boun.cmpe.objectvisualizer.widget.Label;
 
 /**
@@ -39,7 +40,7 @@ public class Main {
 //		r.setAnimation(aSet);
 //		r.startAnimation();
 		
-		test3();
+		test4();
 		
 		
 	}
@@ -52,11 +53,7 @@ public class Main {
 		ObjectVisualizerContext context = new ObjectVisualizerContext();
 		
 		//Create a component you need.
-		Label label = new Label("Test Text Here!");
-		//Avoid recreating components for performance. If you need to
-		//create and delete a lot of components at the same time. Just
-		//create a bunch of them at first, and reuse the old ones
-		//whenever you need another.
+		Label label = new Label(context, "Test Text Here!");
 		
 		//Set position on screen.
 		label.setX(0);
@@ -78,7 +75,7 @@ public class Main {
 		ObjectVisualizerContext context = new ObjectVisualizerContext();
 		
 		//Create an object and add it.
-		Label label = new Label("Test");
+		Label label = new Label(context, "Test");
 		label.setX(100);
 		label.setY(100);
 		label.setFont(new Font(null, Font.PLAIN, 16));
@@ -117,7 +114,7 @@ public class Main {
 		ObjectVisualizerContext context = new ObjectVisualizerContext();
 		
 		// Create an object and add it to the context.
-		final Label l = new Label("Test");
+		Label l = new Label(context, "Test");
 		l.setX(10);
 		l.setY(10);
 		
@@ -134,22 +131,57 @@ public class Main {
 		anim.setInterpolator(new EaseInCubicInterpolator());
 		
 		l.setAnimation(anim);
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				l.startAnimation();
-			}
-		}).start();
+		l.startAnimation();
 		
 		
 	}
 	
+	/**
+	 * Event system usage
+	 */
+	public static void test4() {
+		ObjectVisualizerContext context = new ObjectVisualizerContext();
+		
+		final Label l = new Label(context, "Merhaba CMPE");
+		l.setX(10);
+		l.setY(10);
+		
+		context.addObject(l);
+		
+		TranslateAnimation anim = new TranslateAnimation(10, 10, 100, 100);
+		
+		anim.setDuration(1000);
+		anim.setInterpolator(new EaseInCubicInterpolator());
+		
+		final AlphaAnimation alpha = new AlphaAnimation(1.0f, 0.0f);
+		alpha.setDuration(1000);
+		
+		
+		l.setAnimation(anim);
+		
+		// Events can be created anonymously. Or they can be extended from the base class.
+		//More examples using extend are coming soon.
+		Event e = new Event(context) {
+			@Override
+			public void run() {
+				l.startAnimation();
+			}
+		};
+		e.setDelay(0);
+		
+		Event e2 = new Event(context) {
+			@Override
+			public void run() {
+				l.setAnimation(alpha);
+				l.startAnimation();
+			}
+		};
+		e2.setDelay(2000);
+		
+		context.getEventSystem().pushEvent(e);
+		context.getEventSystem().pushEvent(e2);
+		
+	}
 	
 	
 	
