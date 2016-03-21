@@ -4,7 +4,7 @@ import framework.Game;
 
 /**
  * 
- * @author Tuna Tugcu
+ * @author Tuna Tuğcu
  *
  */
 public class Main {

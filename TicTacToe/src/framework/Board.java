@@ -14,7 +14,7 @@ import acm.graphics.GRect;
 
 /**
  * 
- * @author Cagatay Yildiz
+ * @author Çağatay Yıldız
  * 
  */
 public class Board {
