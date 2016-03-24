@@ -1,4 +1,4 @@
-package visualization;
+package arraylist;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

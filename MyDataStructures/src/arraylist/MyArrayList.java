@@ -7,7 +7,6 @@ import java.util.Random;
 
 import javax.naming.SizeLimitExceededException;
 
-import visualization.MyCanvas;
 import acm.graphics.GLabel;
 import acm.graphics.GOval;
 import acm.graphics.GRect;
@@ -49,6 +48,43 @@ public class MyArrayList  {
 		CONTENT_FONT_SIZE = CELL_EDGE_LEN/2;
 	}
 	
+	public void addAt(int num, int index) throws SizeLimitExceededException {
+		operationName.setLabel("Insertion@Index " + index);
+		operationNumberTitle.setLabel("Number:");
+		canvas.waitFor(500);
+		operationNumber.setLabel(num+"");
+		
+		GLabel newNumLabel = new GLabel(num + "");
+		newNumLabel.setFont(new Font(null, Font.BOLD, CONTENT_FONT_SIZE));
+		newNumLabel.setLocation(operationNumber.getX(), operationNumber.getY());
+		canvas.addObject(newNumLabel);
+		
+		if (num > 99 || num < 0) {
+			operationName.setLabel("");
+			operationNumber.setLabel("");
+			throw new IllegalArgumentException("Enter integers in [0,99]");
+		}
+		if (data.length == currentDataLength) {
+			resize();
+		}
+		for (int i=currentDataLength-1; i>=index; i--) {
+			labels.get(i).move(CELL_EDGE_LEN, 0);
+			canvas.waitFor(1000);
+		}
+
+		operationNumber.setLabel("");
+		// canvas.addObject(newNumLabel);
+		canvas.waitFor(500);
+		canvas.transferObjectTo(newNumLabel, wrapperRect.getX() + index*CELL_EDGE_LEN + CONTENT_FONT_SIZE / 3,
+				wrapperRect.getY() + 4*CONTENT_FONT_SIZE/3, 10, 10);
+		
+		data[index] = num;
+		currentDataLength++;
+		labels.add(index, newNumLabel);
+		operationName.setLabel("");
+		
+	}
+	
 	public void add(int num) throws Exception {
 		operationName.setLabel("Insertion");
 		operationNumberTitle.setLabel("Number:");
@@ -78,33 +114,39 @@ public class MyArrayList  {
 	}
 	
 	public void deleteAt(int index) {
+		// security check
 		if (index < 0 || index>currentDataLength) {
 			throw new IllegalArgumentException("Enter a valid index");
 		}
-		// preparation
+		// update labels of the operation
 		operationName.setLabel("Deletion");
 		operationNumberTitle.setLabel("Index:");
 		canvas.waitFor(500);
 		operationNumber.setLabel(index+"");
+		// add a circle to focus on the index to be deleted
 		GOval oval = new GOval((int) (wrapperRect.getX()+index*CELL_EDGE_LEN), wrapperRect.getY(), 
 				CELL_EDGE_LEN,CELL_EDGE_LEN);
 		oval.setColor(Color.RED);
 		canvas.addObject(oval);
 		canvas.waitFor(500);
 		canvas.removeObject(oval);
-		
+		// update canvas
 		canvas.removeObject(labels.get(index));
 		for (int i=index; i<currentDataLength; i++) {
 			labels.get(i).move(-CELL_EDGE_LEN, 0);
 			canvas.waitFor(500);
 		}
 		labels.remove(index);
+		// update data array
+		for(int i=index+1; i<currentDataLength; i++) {
+			data[i] = data[i+1];
+		}
+		data[currentDataLength] = 0;
 		currentDataLength--;
-		
+		// termination
 		canvas.waitFor(1000);
 		operationName.setLabel("");
 		operationNumber.setLabel("");
-		
 	}
 	
 	public void resize() throws SizeLimitExceededException {
@@ -178,6 +220,7 @@ public class MyArrayList  {
 		for (int i=0; i<15; i++) {
 			list.add(r.nextInt(100));
 		}
+		list.addAt(10, 2);
 		list.deleteAt(1);
 		list.deleteAt(1);
 		list.deleteAt(5);
