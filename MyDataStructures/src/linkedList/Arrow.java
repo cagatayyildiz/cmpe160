@@ -1,34 +1,36 @@
 package linkedList;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 import acm.graphics.GLine;
 import acm.graphics.GObject;
+import acm.graphics.GOval;
 import acm.graphics.GRectangle;
 import arraylist.MyCanvas;
 
 
 public class Arrow extends GObject{
-	double startX, startY , lengthHorizontal,lengthVertical, angle;
+	double ARROW_HEAD_RADIUS = 10 ;
+	double startX, startY , lengthHorizontal,lengthVertical;
+	GLine line1;
+	GOval dot;
 	MyCanvas canvas ;
-	private ArrayList<GLine> lines = new ArrayList<GLine>(3);
-	  public Arrow(MyCanvas canvas, double startX, double startY, double length, double angle){
-		  this.canvas = canvas ;
-		  double ratio = 0.5 ;
-		  this.startX = startX ;
-		  this.startY = startY ;
-		  this.lengthHorizontal = length ;
-		  double arrowHeadLengthX = lengthHorizontal*ratio ;
-		  double arrowHeadLengthY = arrowHeadLengthX*Math.tan(angle*0.0174532);
-		  this.lengthVertical = 2 * arrowHeadLengthY ;
-		  GLine line1 = new GLine(startX, startY, startX + length, startY);
-		  GLine line2 = new GLine(startX + length, startY, startX + arrowHeadLengthX, startY + arrowHeadLengthY);
-		  GLine line3 = new GLine(startX + length, startY, startX + arrowHeadLengthX, startY - arrowHeadLengthY);
-		  lines.add(0, line1);
-		  lines.add(1, line2);
-		  lines.add(2, line3);
-	  }
+
+	  
+	public Arrow(MyCanvas canvas, Node startNode, Node endNode){
+		this.canvas = canvas ;
+		startX = startNode.rightX + - startNode.CELL_EDGE_LEN/6;
+		startY = startNode.rightY ;
+		lengthHorizontal = endNode.leftTopX - startX ;
+		lengthVertical = endNode.rightY - startY ;
+		line1 = new GLine(startX, startY, startX + lengthHorizontal, startY + lengthVertical);
+		dot = new GOval(endNode.leftTopX - ARROW_HEAD_RADIUS/2 ,endNode.rightY - ARROW_HEAD_RADIUS/2,10, 10); 
+		dot.setFilled(true);
+		dot.setFillColor(Color.RED);
+	}
 	@Override
 	public GRectangle getBounds() {
 		return new GRectangle(startX, startY - lengthVertical/2, lengthHorizontal, lengthVertical);
@@ -39,33 +41,37 @@ public class Arrow extends GObject{
 	}
 	
 	public void addComponentsToCanvas(){
-		for(GLine l : lines){
-			canvas.addObject(l);
-		}
+			canvas.addObject(line1);
+			canvas.addObject(dot);
+	}
+	
+	public void removeComponentsFromCanvas(){
+			canvas.removeObject(line1);
+			canvas.removeObject(dot);
 	}
 	
 	@Override
 	public void move(double arg0, double arg1) {
-		for(GLine l : lines){
-			l.move(arg0, arg1);
-		}
+			line1.move(arg0, arg1);
+			dot.move(arg0,arg1);
+			startX += arg0 ;
+			startY += arg1 ;
 	}
 	
 	@Override
 	public void setLocation(double arg0, double arg1) {
-		for(GLine l : lines){
-			l.move(arg0 - l.getX(), arg1 - l.getY());
-		}
+			line1.move(arg0 - line1.getX(), arg1 - line1.getY());
+			dot.move(arg0 - dot.getX(), arg1 - dot.getY());
 	}
 	
 	public void setVisible(boolean value){
-		for(GLine l : lines){
-			l.setVisible(value);
-		}
+			line1.setVisible(value);
+			dot.setVisible(value);
 	}
 	
 	double rightBorderX(){
 		return startX + lengthHorizontal ;
 	}
+	
 	
 }

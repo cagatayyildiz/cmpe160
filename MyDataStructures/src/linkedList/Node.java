@@ -12,10 +12,9 @@ import arraylist.MyCanvas;
 
 public class Node extends GObject{
 	GRect box ;
-	double leftTopX, leftTopY, length;
+	double leftTopX, leftTopY, rightX, rightY;
 	int CELL_EDGE_LEN;
 	GLabel value ;
-	Arrow arrow ;
 	GLine seperator;
 	MyCanvas canvas ;
 	
@@ -24,29 +23,31 @@ public class Node extends GObject{
 		int CONTENT_FONT_SIZE = CELL_EDGE_LEN/3;
 		this.leftTopX = leftTopX ;
 		this.leftTopY = leftTopY ;
+		this.rightX = this.leftTopX + CELL_EDGE_LEN;
+		this.rightY = this.leftTopY + CELL_EDGE_LEN/2;
 		this.value = new GLabel(value+"");
 		this.value.setFont(new Font(null, Font.BOLD, CONTENT_FONT_SIZE));
-		this.value.setLocation(leftTopX + ((CELL_EDGE_LEN*2)/3 - this.value.getWidth())/2, leftTopY + (CELL_EDGE_LEN*2)/3);
+		//added 3 to x coordinate of the label "value" , so that it looks better with the arrowhead
+		this.value.setLocation( 3+leftTopX + ((CELL_EDGE_LEN*2)/3 - this.value.getWidth())/2, leftTopY + (CELL_EDGE_LEN*2)/3);
 		box = new GRect(leftTopX, leftTopY, CELL_EDGE_LEN, CELL_EDGE_LEN ) ;
 		seperator = new GLine(leftTopX + (CELL_EDGE_LEN*2)/3, leftTopY, leftTopX + (CELL_EDGE_LEN*2)/3, leftTopY + CELL_EDGE_LEN);
-		arrow = new Arrow(canvas,leftTopX + (CELL_EDGE_LEN*5)/6, leftTopY + CELL_EDGE_LEN/2, CELL_EDGE_LEN, 25);
 		this.canvas = canvas ;
-		
-		
-		
-		
 	}
 	
 	public void addComponentsToCanvas(){
 		canvas.addObject(box);
 		canvas.addObject(seperator);
 		canvas.addObject(this.value);
-		arrow.addComponentsToCanvas();
 	}
 	
-	public void setArrowVisible(boolean value){
-		arrow.setVisible(value);
+	public void removeComponentsFromCanvas(){
+		canvas.removeObject(box);
+		canvas.removeObject(seperator);
+		canvas.removeObject(this.value);
+		
+		
 	}
+	
 
 	@Override
 	public GRectangle getBounds() {
@@ -62,11 +63,23 @@ public class Node extends GObject{
 	@Override
 	public void move(double arg0, double arg1) {
 		box.move(arg0, arg1);
+		seperator.move(arg0, arg1);
 		value.move(arg0, arg1);
+		leftTopX += arg0 ;
+		rightX += arg0 ;
+		leftTopY += arg1 ;
+		rightY += arg1 ;
 	}
 	
 	double rightBorderX(){
-		return arrow.rightBorderX();
+		//oh no this is an arbitrary number :<
+		return leftTopX + CELL_EDGE_LEN + 60;
 	}
+	
+	double rightBorderY(){
+		return leftTopY + CELL_EDGE_LEN/2;
+	}
+	
+	
 	
 }
